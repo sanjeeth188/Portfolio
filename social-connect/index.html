@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Connect Prototype</title>
+    <style>
+        :root { --bg: #f3f4f6; --card: #ffffff; --text: #111827; --text-muted: #6b7280; --primary: #f97316; --primary-hover: #ea580c; --secondary: #ef4444; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
+        body { background: var(--bg); color: var(--text); }
+        
+        /* Navbar */
+        nav { background: var(--card); padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); z-index: 100; }
+        nav .logo { font-size: 1.5rem; font-weight: bold; background: linear-gradient(90deg, var(--primary), var(--secondary)); -webkit-background-clip: text; color: transparent; }
+        .search-bar { background: var(--bg); padding: 0.5rem 1rem; border-radius: 99px; width: 300px; border: none; outline: none; }
+        .nav-icons { display: flex; gap: 1rem; align-items: center; }
+        .avatar { width: 35px; height: 35px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        
+        /* Layout */
+        .container { max-width: 1200px; margin: 2rem auto; display: grid; grid-template-columns: 250px 1fr 300px; gap: 2rem; padding: 0 1rem; }
+        
+        /* Sidebar */
+        .sidebar { display: flex; flex-direction: column; gap: 0.5rem; position: sticky; top: 80px; height: calc(100vh - 80px); }
+        .menu-item { padding: 0.75rem 1rem; border-radius: 8px; font-weight: 500; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 1rem;}
+        .menu-item:hover { background: rgba(249, 115, 22, 0.1); color: var(--primary); }
+        .menu-item.active { background: rgba(249, 115, 22, 0.1); color: var(--primary); font-weight: bold; }
+        
+        /* Feed */
+        .feed { display: flex; flex-direction: column; gap: 1.5rem; }
+        .create-post { background: var(--card); padding: 1.5rem; border-radius: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .create-post textarea { width: 100%; border: none; outline: none; resize: none; font-size: 1rem; margin-bottom: 1rem; }
+        .create-post-actions { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e5e7eb; padding-top: 1rem; }
+        .btn { padding: 0.5rem 1.5rem; background: var(--primary); color: white; border: none; border-radius: 99px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn:hover { background: var(--primary-hover); }
+        
+        .post { background: var(--card); padding: 1.5rem; border-radius: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .post-header { display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; }
+        .post-author { font-weight: bold; }
+        .post-time { color: var(--text-muted); font-size: 0.85rem; }
+        .post-img { width: 100%; height: 300px; border-radius: 8px; object-fit: cover; margin-top: 1rem; background: var(--bg); }
+        .post-actions { display: flex; gap: 2rem; border-top: 1px solid #e5e7eb; margin-top: 1rem; padding-top: 1rem; color: var(--text-muted); font-weight: 500;}
+        .action { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; transition: 0.2s; }
+        .action:hover { color: var(--primary); }
+        .action.liked { color: var(--secondary); }
+        
+        /* Right Sidebar */
+        .trending { background: var(--card); padding: 1.5rem; border-radius: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); position: sticky; top: 80px; }
+        .trending h3 { margin-bottom: 1rem; font-size: 1.1rem; }
+        .trend-item { margin-bottom: 1rem; }
+        .trend-tag { font-weight: bold; color: var(--text); }
+        .trend-posts { font-size: 0.85rem; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">Social Connect</div>
+        <input type="text" class="search-bar" placeholder="Search for people, posts, or tags...">
+        <div class="nav-icons">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <div class="avatar">SJ</div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            <div class="menu-item active">Home Feed</div>
+            <div class="menu-item">Explore</div>
+            <div class="menu-item">Notifications</div>
+            <div class="menu-item">Messages</div>
+            <div class="menu-item">Bookmarks</div>
+            <div class="menu-item">Profile</div>
+            <div class="menu-item">Settings</div>
+        </div>
+
+        <!-- Main Feed -->
+        <div class="feed" id="feed-container">
+            <div class="create-post">
+                <textarea rows="3" placeholder="What's going on, Sanjeethan?" id="post-input"></textarea>
+                <div class="create-post-actions">
+                    <span style="color: var(--primary); font-weight: 500; cursor: pointer;">+ Add Media</span>
+                    <button class="btn" onclick="createPost()">Post</button>
+                </div>
+            </div>
+            
+            <!-- Posts will be generated by JS -->
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="trending">
+            <h3>Trending Topics</h3>
+            <div class="trend-item">
+                <div class="trend-tag">#TechNews2026</div>
+                <div class="trend-posts">12.5K posts</div>
+            </div>
+            <div class="trend-item">
+                <div class="trend-tag">#WebDevelopment</div>
+                <div class="trend-posts">8.2K posts</div>
+            </div>
+            <div class="trend-item">
+                <div class="trend-tag">#ArtificialIntelligence</div>
+                <div class="trend-posts">45.1K posts</div>
+            </div>
+            <div class="trend-item">
+                <div class="trend-tag">#DesignInspo</div>
+                <div class="trend-posts">5.9K posts</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const initialPosts = [
+            {
+                author: 'Jane Doe',
+                time: '2 hours ago',
+                content: 'Just launched my new portfolio website! The new dark mode looks absolutely stunning. What do you guys think? 🚀✨',
+                image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=600',
+                likes: 124,
+                comments: 18
+            },
+            {
+                author: 'Tech Insider',
+                time: '5 hours ago',
+                content: 'Breaking: New major framework update drops today. Prepare for some wild refactoring this weekend! 💻🔥',
+                likes: 342,
+                comments: 89
+            }
+        ];
+
+        const feedContainer = document.getElementById('feed-container');
+
+        function renderPost(post) {
+            const div = document.createElement('div');
+            div.className = 'post';
+            
+            let imgHtml = post.image ? `<img src="${post.image}" class="post-img">` : '';
+            
+            div.innerHTML = `
+                <div class="post-header">
+                    <div class="avatar" style="background:var(--text);">${post.author.charAt(0)}</div>
+                    <div>
+                        <div class="post-author">${post.author}</div>
+                        <div class="post-time">${post.time}</div>
+                    </div>
+                </div>
+                <div class="post-content">${post.content}</div>
+                ${imgHtml}
+                <div class="post-actions">
+                    <div class="action" onclick="toggleLike(this, ${post.likes})">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                        <span>${post.likes}</span>
+                    </div>
+                    <div class="action">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                        <span>${post.comments || 0}</span>
+                    </div>
+                    <div class="action">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                        <span>Share</span>
+                    </div>
+                </div>
+            `;
+            return div;
+        }
+
+        function toggleLike(el, baseLikes) {
+            el.classList.toggle('liked');
+            const span = el.querySelector('span');
+            const svg = el.querySelector('svg');
+            if(el.classList.contains('liked')) {
+                span.innerText = baseLikes + 1;
+                svg.style.fill = 'var(--secondary)';
+                svg.style.stroke = 'var(--secondary)';
+            } else {
+                span.innerText = baseLikes;
+                svg.style.fill = 'none';
+                svg.style.stroke = 'currentColor';
+            }
+        }
+
+        function createPost() {
+            const input = document.getElementById('post-input');
+            const content = input.value.trim();
+            if(!content) return;
+            
+            const newPost = {
+                author: 'Sanjeethan',
+                time: 'Just now',
+                content: content,
+                likes: 0,
+                comments: 0
+            };
+            
+            const postEl = renderPost(newPost);
+            
+            // Insert right after the create-post div
+            feedContainer.insertBefore(postEl, feedContainer.children[1]);
+            input.value = '';
+        }
+
+        // Init feed
+        initialPosts.forEach(p => {
+            feedContainer.appendChild(renderPost(p));
+        });
+    </script>
+</body>
+</html>
