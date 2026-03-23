@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     siteName: "Sanjeethan Jeganathan Portfolio",
     images: [
       {
-        url: "/profile.jpg",
+        url: "/Portfolio/profile.jpg",
         width: 800,
         height: 800,
         alt: "Sanjeethan Jeganathan",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     title: "Sanjeethan Jeganathan | Data Analyst & Business Analyst Portfolio",
     description:
       "Data Science student | Aspiring Data Analyst & Business Analyst based in Colombo, Sri Lanka.",
-    images: ["/profile.jpg"],
+    images: ["/Portfolio/profile.jpg"],
   },
   robots: {
     index: true,
@@ -95,7 +95,6 @@ const jsonLd = {
   ],
   sameAs: [
     "https://linkedin.com/in/sanjeethan-jeganathan",
-    "https://sanjeeth188.github.io/Portfolio/",
   ],
 };
 

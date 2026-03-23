@@ -16,7 +16,6 @@ const contactItems = [
   { icon: <Phone style={{ width: "18px", height: "18px" }} />, label: "Phone", value: "+94 (0) 757 014 955", href: "tel:+94757014955" },
   { icon: <MapPin style={{ width: "18px", height: "18px" }} />, label: "Location", value: "Colombo-13, Sri Lanka", href: null },
   { icon: <LinkedInIcon />, label: "LinkedIn", value: "linkedin.com/in/sanjeethan-jeganathan", href: "https://linkedin.com/in/sanjeethan-jeganathan" },
-  { icon: <ExternalLink style={{ width: "18px", height: "18px" }} />, label: "Portfolio", value: "sanjeeth188.github.io/Portfolio", href: "https://sanjeeth188.github.io/Portfolio/" },
 ];
 
 export default function Contact() {
