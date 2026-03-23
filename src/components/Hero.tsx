@@ -16,7 +16,7 @@ const stagger = {
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: "easeOut" } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } },
 };
 
 export default function Hero() {
@@ -78,7 +78,7 @@ export default function Hero() {
               View Projects <ArrowDown style={{ width: "16px", height: "16px", transform: "rotate(-45deg)" }} />
             </button>
             <a
-              href="/Sanjeethan.Jeganathan.CV.pdf"
+              href="/Portfolio/Sanjeethan.Jeganathan.CV.pdf"
               download
               style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "12px 24px", borderRadius: "999px", border: "1px solid rgba(255,255,255,0.2)", background: "rgba(255,255,255,0.05)", color: "#fff", fontWeight: 600, fontSize: "14px", textDecoration: "none", transition: "all 0.25s ease" }}
               onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.1)")}
@@ -103,7 +103,6 @@ export default function Hero() {
             <div style={{ display: "flex", gap: "12px" }}>
               {[
                 { href: "https://linkedin.com/in/sanjeethan-jeganathan", icon: <LinkedInIcon />, label: "LinkedIn" },
-                { href: "https://sanjeeth188.github.io/Portfolio/", icon: <ExternalLink style={{ width: "20px", height: "20px" }} />, label: "Portfolio" },
                 { href: "mailto:sanjeethdilani18@gmail.com", icon: <Mail style={{ width: "20px", height: "20px" }} />, label: "Email" },
               ].map(({ href, icon, label }) => (
                 <a

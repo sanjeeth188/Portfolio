@@ -18,7 +18,6 @@ const links = [
 
 const socials = [
   { icon: <LinkedInIcon />, href: "https://linkedin.com/in/sanjeethan-jeganathan", label: "LinkedIn" },
-  { icon: <ExternalLink style={{ width: "16px", height: "16px" }} />, href: "https://sanjeeth188.github.io/Portfolio/", label: "Portfolio" },
   { icon: <Mail style={{ width: "16px", height: "16px" }} />, href: "mailto:sanjeethdilani18@gmail.com", label: "Email" },
 ];
 
