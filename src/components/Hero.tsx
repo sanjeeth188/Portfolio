@@ -16,7 +16,7 @@ const stagger = {
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: "easeInOut" } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: "easeOut" } as any },
 };
 
 export default function Hero() {
