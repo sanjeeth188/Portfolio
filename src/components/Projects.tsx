@@ -5,11 +5,6 @@ import { useInView } from "react-intersection-observer";
 import { ExternalLink, Tag } from "lucide-react";
 import Image from "next/image";
 
-const GithubIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
-    <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
-  </svg>
-);
 
 const projects = [
   {
@@ -19,8 +14,7 @@ const projects = [
     image: "/Portfolio/project1.png",
     tags: ["HTML/CSS/JS", "Agile", "UX Design", "E-commerce"],
     highlight: "User story-driven development with sprint planning and retrospective documentation",
-    github: "https://github.com/sanjeeth188",
-    live: null,
+    live: "https://sanjeeth188.github.io/Portfolio/gallery-cafe/index.html",
   },
   {
     title: "Flex Fit",
@@ -29,8 +23,7 @@ const projects = [
     image: "/Portfolio/project2.png",
     tags: ["Full-Stack", "Database Design", "CRUD", "System Design"],
     highlight: "End-to-end member lifecycle management with reporting and operational dashboards",
-    github: "https://github.com/sanjeeth188",
-    live: null,
+    live: "https://sanjeeth188.github.io/Portfolio/social-connect/index.html",
   },
   {
     title: "Finance Dashboard",
@@ -39,8 +32,7 @@ const projects = [
     image: "/Portfolio/project3.png",
     tags: ["Power BI", "SQL", "Data Analysis", "KPI Tracking"],
     highlight: "Dynamic visualisations with drill-through capability and automated data refresh",
-    github: "https://github.com/sanjeeth188",
-    live: null,
+    live: "https://sanjeeth188.github.io/Portfolio/finance-dashboard/index.html",
   },
 ];
 
@@ -111,24 +103,12 @@ export default function Projects() {
 
                 {/* Links */}
                 <div style={{ display: "flex", gap: "10px" }}>
-                  <a href={p.github} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "12px", fontWeight: 600, color: "#94a3b8", textDecoration: "none", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "999px", padding: "7px 14px", transition: "all 0.2s ease" }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "#fff"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.3)"; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "#94a3b8"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.15)"; }}
+                  <a href={p.live} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "12px", fontWeight: 600, color: "#60a5fa", textDecoration: "none", border: "1px solid rgba(59,130,246,0.4)", borderRadius: "999px", padding: "7px 14px", transition: "all 0.2s ease", width: "100%", justifyContent: "center" }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#3b82f6"; (e.currentTarget as HTMLElement).style.color = "#fff"; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ""; (e.currentTarget as HTMLElement).style.color = "#60a5fa"; }}
                   >
-                    <GithubIcon /> GitHub
+                    <ExternalLink style={{ width: "13px", height: "13px" }} /> Live Demo
                   </a>
-                  {p.live ? (
-                    <a href={p.live} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "12px", fontWeight: 600, color: "#60a5fa", textDecoration: "none", border: "1px solid rgba(59,130,246,0.4)", borderRadius: "999px", padding: "7px 14px", transition: "all 0.2s ease" }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#3b82f6"; (e.currentTarget as HTMLElement).style.color = "#fff"; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ""; (e.currentTarget as HTMLElement).style.color = "#60a5fa"; }}
-                    >
-                      <ExternalLink style={{ width: "13px", height: "13px" }} /> Live Demo
-                    </a>
-                  ) : (
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "12px", color: "#334155", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "999px", padding: "7px 14px", cursor: "not-allowed" }}>
-                      <ExternalLink style={{ width: "13px", height: "13px" }} /> Coming Soon
-                    </span>
-                  )}
                 </div>
               </div>
             </motion.article>
