@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Menu - The Gallery Cafe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .filters { display: flex; gap: 1rem; justify-content: center; margin-bottom: 3rem; flex-wrap: wrap; }
+    .filter-btn { padding: 0.5rem 1.5rem; background: var(--bg-card); border: 1px solid var(--border); color: #fff; border-radius: 99px; transition: 0.3s; }
+    .filter-btn.active, .filter-btn:hover { background: var(--primary); color: #000; border-color: var(--primary); }
+    
+    .menu-item { display: flex; flex-direction: column; height: 100%; border-radius: 8px; overflow: hidden; background: var(--bg-card); border: 1px solid var(--border); }
+    .menu-img { width: 100%; height: 200px; object-fit: cover; }
+    .menu-content { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
+    .menu-title { font-size: 1.25rem; font-family: var(--font-main); color: var(--primary); margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;}
+    .menu-price { font-family: var(--font-sans); color: #fff; font-weight: 600; }
+    .menu-desc { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; flex-grow: 1; }
+    
+    .cart-btn { position: fixed; bottom: 2rem; right: 2rem; background: var(--primary); color: #000; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); z-index: 100;}
+    .cart-badge { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold;}
+  </style>
+</head>
+<body class="pt-nav">
+  <nav>
+    <a href="index.html" class="logo">Gallery Cafe</a>
+    <ul id="navbar-links"></ul>
+  </nav>
+
+  <div class="container section">
+    <h2 class="text-center" style="font-size: 2.5rem; margin-bottom: 1rem;">Culinary Masterpieces</h2>
+    <p class="text-center" style="color: var(--text-muted); max-width: 600px; margin: 0 auto 3rem auto;">Select your favorite dishes and pre-order them ahead of your visit.</p>
+
+    <div class="filters" id="filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="starters">Starters</button>
+      <button class="filter-btn" data-filter="mains">Mains</button>
+      <button class="filter-btn" data-filter="desserts">Desserts</button>
+      <button class="filter-btn" data-filter="drinks">Drinks</button>
+    </div>
+
+    <div class="grid grid-3" id="menu-grid"></div>
+  </div>
+
+  <button class="cart-btn" onclick="checkout()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+    <div class="cart-badge" id="cart-count">0</div>
+  </button>
+
+  <script src="app.js"></script>
+  <script>
+    let cart = [];
+    let currentFilter = 'all';
+
+    function renderMenu() {
+      const data = getData();
+      const grid = document.getElementById('menu-grid');
+      grid.innerHTML = '';
+      
+      const filtered = currentFilter === 'all' ? data.menu : data.menu.filter(m => m.category === currentFilter);
+      
+      filtered.forEach(item => {
+        grid.innerHTML += `
+          <div class="menu-item">
+            <img src="${item.image}" alt="${item.name}" class="menu-img">
+            <div class="menu-content">
+              <div class="menu-title">
+                <span>${item.name}</span>
+                <span class="menu-price">$${item.price.toFixed(2)}</span>
+              </div>
+              <p class="menu-desc">${item.desc}</p>
+              <button class="btn btn-outline" style="width: 100%; border-color: var(--border); color: var(--text-light);" onclick="addToCart(${item.id})">Add to Order</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function addToCart(id) {
+      if(!checkAuth()) {
+        alert("Please login to pre-order items.");
+        window.location.href = 'login.html';
+        return;
+      }
+      cart.push(id);
+      document.getElementById('cart-count').innerText = cart.length;
+    }
+
+    function checkout() {
+      if(cart.length === 0) {
+        alert("Your order is empty!");
+        return;
+      }
+      const data = getData();
+      const user = checkAuth();
+      
+      // Calculate total
+      let total = 0;
+      let orderItems = {};
+      cart.forEach(id => {
+        const item = data.menu.find(m => m.id === id);
+        total += item.price;
+        orderItems[id] = (orderItems[id] || 0) + 1;
+      });
+      
+      const itemsArr = Object.keys(orderItems).map(id => ({ menuId: parseInt(id), qty: orderItems[id] }));
+      
+      data.orders.push({
+        id: Date.now(),
+        userId: user.id,
+        items: itemsArr,
+        total: total,
+        status: 'pending',
+        date: new Date().toISOString()
+      });
+      
+      updateData(data);
+      cart = [];
+      document.getElementById('cart-count').innerText = 0;
+      alert("Your pre-order has been placed successfully!");
+    }
+
+    // Filters
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        currentFilter = e.target.getAttribute('data-filter');
+        renderMenu();
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderMenu();
+    });
+  </script>
+</body>
+</html>

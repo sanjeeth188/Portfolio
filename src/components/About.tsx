@@ -45,7 +45,7 @@ export default function About() {
               <div style={{ position: "absolute", top: "12px", left: "12px", right: "-12px", bottom: "-12px", borderRadius: "20px", border: "2px solid rgba(139,92,246,0.3)" }} />
               <div style={{ position: "relative", borderRadius: "20px", overflow: "hidden", aspectRatio: "4/5", background: "linear-gradient(135deg, rgba(59,130,246,0.2), rgba(139,92,246,0.2))" }}>
                 <Image
-                  src="/Portfolio/profile.jpg"
+                  src="/profile.jpg"
                   alt="Sanjeethan Jeganathan"
                   fill
                   sizes="400px"

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book a Table - The Gallery Cafe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="pt-nav">
+  <nav>
+    <a href="index.html" class="logo">Gallery Cafe</a>
+    <ul id="navbar-links"></ul>
+  </nav>
+
+  <div class="container section">
+    <div class="card" style="max-width: 600px; margin: 0 auto; padding: 3rem;">
+      <h2 class="text-center" style="margin-bottom: 2rem;">Reserve Your Experience</h2>
+      <p class="text-center" style="color: var(--text-muted); margin-bottom: 2rem;">Secure your table for an unforgettable dining experience.</p>
+      
+      <form id="reservation-form">
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="date" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>Time</label>
+            <input type="time" id="time" class="form-control" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Number of Guests</label>
+          <select id="guests" class="form-control">
+            <option value="1">1 Person</option>
+            <option value="2" selected>2 People</option>
+            <option value="3">3 People</option>
+            <option value="4">4 People</option>
+            <option value="5">5 People</option>
+            <option value="6">6+ People</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Special Requests</label>
+          <textarea id="requests" class="form-control" rows="3" placeholder="Anniversary, allergies, etc."></textarea>
+        </div>
+        <div class="form-group" style="text-align: center; margin-top: 2rem;">
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">Confirm Reservation</button>
+        </div>
+      </form>
+      <div id="success-msg" style="display: none; text-align: center; color: var(--success); margin-top: 1rem; font-weight: bold;">
+        Your reservation has been confirmed!
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.getElementById('reservation-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const user = checkAuth();
+      if(!user) {
+        alert("Please login to make a reservation.");
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const date = document.getElementById('date').value;
+      const time = document.getElementById('time').value;
+      const guests = document.getElementById('guests').value;
+      
+      if(!date || !time) return;
+
+      const data = getData();
+      data.reservations.push({
+        id: Date.now(),
+        userId: user.id,
+        name: user.name,
+        date: date,
+        time: time,
+        guests: parseInt(guests),
+        status: 'confirmed'
+      });
+      
+      updateData(data);
+      
+      document.getElementById('reservation-form').style.display = 'none';
+      document.getElementById('success-msg').style.display = 'block';
+    });
+  </script>
+</body>
+</html>

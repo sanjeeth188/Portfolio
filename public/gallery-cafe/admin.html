@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Gallery Cafe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
+    .table-container { background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border); overflow-x: auto; margin-bottom: 3rem; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th, td { padding: 1rem; border-bottom: 1px solid var(--border); }
+    th { background: rgba(0,0,0,0.2); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; color: var(--text-muted);}
+    .status-badge { padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase;}
+    .status-pending { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+    .status-preparing { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+    .status-ready { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+    
+    .panel-btn { padding: 0.4rem 0.8rem; border-radius: 4px; font-size: 0.8rem; background: var(--bg-dark); color: #fff; border: 1px solid var(--border); cursor: pointer; transition: 0.2s;}
+    .panel-btn:hover { background: var(--primary); color: #000; border-color: var(--primary);}
+  </style>
+</head>
+<body class="pt-nav">
+  <nav>
+    <a href="index.html" class="logo">Gallery Cafe</a>
+    <ul id="navbar-links"></ul>
+  </nav>
+
+  <div class="container section">
+    <div class="dashboard-header">
+      <h2>Staff & Admin Dashboard</h2>
+      <div>
+        <span id="admin-name" style="color: var(--primary); margin-right: 1rem; font-weight: bold;"></span>
+      </div>
+    </div>
+
+    <h3>Active Pre-Orders</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="orders-tbody">
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Today's Reservations</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Res ID</th>
+            <th>Customer</th>
+            <th>Date & Time</th>
+            <th>Guests</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="res-tbody">
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = checkAuth();
+      if(!user || (user.role !== 'admin' && user.role !== 'staff')) {
+        alert("Unauthorized access!");
+        window.location.href = 'index.html';
+        return;
+      }
+      
+      document.getElementById('admin-name').innerText = user.name + ' (' + user.role + ')';
+      renderDashboard();
+    });
+
+    function renderDashboard() {
+      const data = getData();
+      
+      // Render Orders
+      const ordersTbody = document.getElementById('orders-tbody');
+      ordersTbody.innerHTML = '';
+      
+      // Sort orders newest first
+      const sortedOrders = [...data.orders].sort((a,b) => b.id - a.id);
+      
+      sortedOrders.forEach(order => {
+        const customer = data.users.find(u => u.id === order.userId);
+        
+        // Build items string
+        const itemNames = order.items.map(i => {
+           const menuItem = data.menu.find(m => m.id === i.menuId);
+           return `${i.qty}x ${menuItem ? menuItem.name : 'Unknown'}`;
+        }).join('<br>');
+
+        const sClass = order.status === 'pending' ? 'status-pending' : (order.status === 'preparing' ? 'status-preparing' : 'status-ready');
+        
+        let actionBtn = `<button class="panel-btn" onclick="advanceOrder(${order.id}, '${order.status}')">Advance</button>`;
+        if(order.status === 'ready') actionBtn = `<span class="text-muted">Completed</span>`;
+
+        ordersTbody.innerHTML += `
+          <tr>
+            <td>#${order.id}</td>
+            <td>${customer ? customer.name : 'Unknown'}</td>
+            <td>${itemNames}</td>
+            <td>$${order.total.toFixed(2)}</td>
+            <td><span class="status-badge ${sClass}">${order.status}</span></td>
+            <td>${actionBtn}</td>
+          </tr>
+        `;
+      });
+
+      // Render Reservations
+      const resTbody = document.getElementById('res-tbody');
+      resTbody.innerHTML = '';
+      
+      const sortedRes = [...data.reservations].sort((a,b) => b.id - a.id);
+      
+      sortedRes.forEach(res => {
+        resTbody.innerHTML += `
+          <tr>
+            <td>#${res.id}</td>
+            <td>${res.name}</td>
+            <td>${res.date} @ ${res.time}</td>
+            <td>${res.guests} people</td>
+            <td><span class="status-badge status-ready">${res.status}</span></td>
+          </tr>
+        `;
+      });
+    }
+
+    // Function to advance order state: pending -> preparing -> ready
+    window.advanceOrder = function(id, currentStatus) {
+      if(currentStatus === 'ready') return;
+      const data = getData();
+      const order = data.orders.find(o => o.id === id);
+      if(order) {
+        if(order.status === 'pending') order.status = 'preparing';
+        else if(order.status === 'preparing') order.status = 'ready';
+        updateData(data);
+        renderDashboard(); // Re-render
+      }
+    };
+  </script>
+</body>
+</html>
